@@ -1,0 +1,18 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "4.14",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "VRRTS",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"UMG",
+				"UMGEditor"
+			]
+		}
+	]
+}
