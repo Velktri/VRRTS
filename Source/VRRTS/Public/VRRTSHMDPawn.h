@@ -51,6 +51,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = VR)
 	TSubclassOf<class AActor> RightWidgetContainer;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	float ThumbDeadZone;
+
 	UFUNCTION()
 	void LeftTriggerPressed();
 
@@ -64,6 +67,24 @@ public:
 	void RightTriggerReleased();
 
 	UFUNCTION()
+	void LeftThumbstickReleased();
+
+	UFUNCTION()
+	void RightThumbstickReleased();
+
+	UFUNCTION()
+	void MCLeftY(float Amount);
+
+	UFUNCTION()
+	void MCLeftX(float Amount);
+
+	UFUNCTION()
+	void MCRightY(float Amount);
+
+	UFUNCTION()
+	void MCRightX(float Amount);
+
+	UFUNCTION()
 	AVRRTSPlayerController* GetPlayerController();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ingame HUD")
@@ -75,8 +96,11 @@ public:
 	UFUNCTION()
 	void SetUIElements(AVRRTSSelectable* SelectedEntity);
 
-private:
-	bool bIsLeftPressed;
-	bool bIsRightPressed;
-	//FHitResult SelectedEntity;
+	UFUNCTION()
+	void SetMCRotation();
+
+	float LeftX;
+	float LeftY;
+	float RightX;
+	float RightY;
 };

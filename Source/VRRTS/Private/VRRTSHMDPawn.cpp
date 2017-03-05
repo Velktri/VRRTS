@@ -31,30 +31,22 @@ AVRRTSHMDPawn::AVRRTSHMDPawn()
 	LeftWidgetClass = (LeftWidgetControllerOBJ.Succeeded()) ? LeftWidgetControllerOBJ.Class : nullptr;
 	RightWidgetClass = (RightWidgetControllerOBJ.Succeeded()) ? RightWidgetControllerOBJ.Class : nullptr;
 
-
-
 }
 
 // Called when the game starts or when spawned
 void AVRRTSHMDPawn::BeginPlay() {
 	Super::BeginPlay();
 
+	ThumbDeadZone = 0.7;
 	SetupPlayerHeight();
 	SetupMontionControllers();
 }
 
 // Called every frame
-void AVRRTSHMDPawn::Tick( float DeltaTime )
-{
+void AVRRTSHMDPawn::Tick( float DeltaTime ) {
 	Super::Tick( DeltaTime );
 
-	//if (bIsLeftPressed) {
-	//	SelectedEntity = LeftController->LineTraceFunction(DeltaTime);
-	//}
-
-	//if (bIsRightPressed) {
-	//	SelectedEntity = RightController->LineTraceFunction(DeltaTime);
-	//}
+	SetMCRotation();
 }
 
 #pragma region Inputs
@@ -67,10 +59,18 @@ void AVRRTSHMDPawn::SetupPlayerInputComponent(class UInputComponent* InputCompon
 
 	InputComponent->BindAction("RightTrigger", EInputEvent::IE_Pressed, this, &AVRRTSHMDPawn::RightTriggerPressed);
 	InputComponent->BindAction("RightTrigger", EInputEvent::IE_Released, this, &AVRRTSHMDPawn::RightTriggerReleased);
+
+	InputComponent->BindAction("RightThumbstick", EInputEvent::IE_Released, this, &AVRRTSHMDPawn::RightThumbstickReleased);
+	InputComponent->BindAction("LeftThumbstick", EInputEvent::IE_Released, this, &AVRRTSHMDPawn::LeftThumbstickReleased);
+
+	InputComponent->BindAxis("MC_Left_Y", this, &AVRRTSHMDPawn::MCLeftY);
+	InputComponent->BindAxis("MC_Left_X", this, &AVRRTSHMDPawn::MCLeftX);
+	InputComponent->BindAxis("MC_Right_Y", this, &AVRRTSHMDPawn::MCRightY);
+	InputComponent->BindAxis("MC_Right_X", this, &AVRRTSHMDPawn::MCRightX);
 }
 
 void AVRRTSHMDPawn::LeftTriggerPressed() {
-	//bIsLeftPressed = true;
+
 }
 
 void AVRRTSHMDPawn::LeftTriggerReleased() {
@@ -96,7 +96,7 @@ void AVRRTSHMDPawn::LeftTriggerReleased() {
 }
 
 void AVRRTSHMDPawn::RightTriggerPressed() {
-	//bIsRightPressed = true;
+
 }
 
 void AVRRTSHMDPawn::RightTriggerReleased() {
@@ -120,6 +120,38 @@ void AVRRTSHMDPawn::RightTriggerReleased() {
 			}
 		}
 	}
+}
+
+void AVRRTSHMDPawn::LeftThumbstickReleased() {
+	if (FMath::Abs(LeftX) + FMath::Abs(LeftY) >= ThumbDeadZone) {
+		LeftController->GetUIWidget()->SetThumbstickPressed(FVector2D(LeftX, LeftY));
+	} else {
+		LeftController->GetUIWidget()->SetThumbstickPressed(FVector2D(0.0f, 0.0f));
+	}
+}
+
+void AVRRTSHMDPawn::RightThumbstickReleased() {
+	if (FMath::Abs(RightX) + FMath::Abs(RightY) >= ThumbDeadZone) {
+		RightController->GetUIWidget()->SetThumbstickPressed(FVector2D(RightX, RightY));
+	} else {
+		RightController->GetUIWidget()->SetThumbstickPressed(FVector2D(0.0f, 0.0f));
+	}
+}
+
+void AVRRTSHMDPawn::MCLeftY(float Amount) {
+	LeftY = Amount;
+}
+
+void AVRRTSHMDPawn::MCLeftX(float Amount) {
+	LeftX = Amount;
+}
+
+void AVRRTSHMDPawn::MCRightY(float Amount) {
+	RightY = Amount;
+}
+
+void AVRRTSHMDPawn::MCRightX(float Amount) {
+	RightX = Amount;
 }
 
 #pragma endregion
@@ -149,7 +181,7 @@ void AVRRTSHMDPawn::SetupMontionControllers() {
 
 		RightController = World->SpawnActor<AHandControllerActor>(HandBlueprint, Location, Rotation);
 		RightController->AttachToComponent(VROrigin, AttachRules);
-		RightController->MotionControl->Hand = EControllerHand::Right;	
+		RightController->MotionControl->Hand = EControllerHand::Right;
 		UUserWidgetController* RightWidget = (UUserWidgetController*)CreateWidget<UUserWidget>(GetPlayerController(), this->RightWidgetClass);
 		RightController->SetUIContainer(RightWidgetContainer, RightWidget);
 	}
@@ -163,4 +195,18 @@ AVRRTSPlayerController* AVRRTSHMDPawn::GetPlayerController() {
 void AVRRTSHMDPawn::SetUIElements(AVRRTSSelectable* SelectedEntity) {
 	RightController->GetUIWidget()->SetUIElements(SelectedEntity);
 	LeftController->GetUIWidget()->SetUIElements(SelectedEntity);
+}
+
+void AVRRTSHMDPawn::SetMCRotation() {
+	if (FMath::Abs(LeftX) + FMath::Abs(LeftY) >= ThumbDeadZone) {
+		LeftController->GetUIWidget()->SetMCVector(FVector2D(LeftX, LeftY));
+	} else {
+		LeftController->GetUIWidget()->SetMCVector(FVector2D(0.0f, 0.0f));
+	}
+
+	if (FMath::Abs(RightX) + FMath::Abs(RightY) >= ThumbDeadZone) {
+		RightController->GetUIWidget()->SetMCVector(FVector2D(RightX, RightY));
+	} else {
+		RightController->GetUIWidget()->SetMCVector(FVector2D(0.0f, 0.0f));
+	}
 }

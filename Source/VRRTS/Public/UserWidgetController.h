@@ -25,11 +25,23 @@ public:
 	UFUNCTION()
 	void SetUIElements(AVRRTSSelectable* SelectedEntity);
 
+	UFUNCTION()
+	void SetMCVector(FVector2D Vec);
+
+	UFUNCTION()
+	void SetThumbstickPressed(FVector2D Vec);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Input")
+	void UpdateThumbstickPressed(FVector2D vec);
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "Selection")
 	void Clear();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Selection")
 	void UpdateUnitButtons(const TArray<AUnit*>& Units);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Input")
+	void UpdateMCVector(FVector2D vec);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Selection")
 	void UpdateBuildingButtons(const TArray<ABuilding*>& Buildings);

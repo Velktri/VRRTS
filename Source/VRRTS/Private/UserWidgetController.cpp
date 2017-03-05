@@ -36,6 +36,14 @@ void UUserWidgetController::SetUIElements(AVRRTSSelectable* SelectedEntity) {
 	}
 }
 
+void UUserWidgetController::SetMCVector(FVector2D Vec) {
+	UpdateMCVector(Vec);
+}
+
+void UUserWidgetController::SetThumbstickPressed(FVector2D Vec) {
+	UpdateThumbstickPressed(Vec);
+}
+
 void UUserWidgetController::SetUnitData(TArray<AUnit*> Units) {
 	UpdateUnitButtons(Units);
 }

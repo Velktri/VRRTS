@@ -3,7 +3,6 @@
 #pragma once
 
 #include "GameFramework/PlayerController.h"
-#include "VRRTS.h"
 #include "VRRTSPlayerController.generated.h"
 
 UENUM(BlueprintType)
@@ -24,7 +23,7 @@ public:
 	
 	/** Player's Race */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Race)
-		ERace Race;
+	ERace Race;
 
 	/** Start Building */
 	TSubclassOf<class ABuilding> StartBuilding;
@@ -41,10 +40,10 @@ public:
 
 private:
 	/* Players HMD */
-	AVRRTSHMDPawn* VRHMD;
-	AVRRTSSelectable* SelectedEntities;
-	TArray<AUnit*> OwnedUnits;
-	TArray<ABuilding*> OwnedBuildings;
+	class AVRRTSHMDPawn* VRHMD;
+	class AVRRTSSelectable* SelectedEntities;
+	TArray<class AUnit*> OwnedUnits;
+	TArray<class ABuilding*> OwnedBuildings;
 
 	void CreationFailed(AVRRTSSelectable* selectable);
 };
